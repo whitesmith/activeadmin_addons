@@ -4,7 +4,11 @@ module ActiveAdminAddons
     include InputOptionsHandler
 
     def array_to_select_options
-      selected_values = input_value.to_s.split(",")
+      selected_values = if input_value.is_a? Array
+                          input_value
+                        else
+                          input_value.to_s.split(",")
+                        end
       array = collection.map(&:to_s) + selected_values
       array.sort.map do |value|
         option = { id: value, text: value }
