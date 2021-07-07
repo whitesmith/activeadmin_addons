@@ -18,15 +18,31 @@ To run the application quickly, you can execute in the root of the gem the follo
 bin/setup
 ```
 
-This command loads the dummy app with test data and an admin user with:
+This command loads the dummy app with test data.
+To navigate the application you can run, inside the `/spec/dummy` directory...
 
-* email: `admin@platan.us`
-* password: `12345678`
-
-To navigate the application you can run, inside the `/spec/dummy` directory:
+**With webpack:**
 
 ```
-rails s
+bin/rails s
+```
+
+And in another tab:
+
+```
+bin/webpack-dev-server
+```
+
+**With Sprockets:**
+
+```
+export SPROCKETS=true; bin/rails s
+```
+
+And if you change the javascript, you will need to run the following command:
+
+```
+bundle exec rake prepare_assets
 ```
 
 > It is a good idea to add to the dummy app any new functionality. See for example the file: `/spec/dummy/app/admin/invoices.rb`
@@ -36,10 +52,20 @@ rails s
 The gem is tested using [rspec](https://github.com/rspec/rspec-rails), [capybara](https://github.com/teamcapybara/capybara#using-capybara-with-rspec) and [selenium-webdriver](https://github.com/SeleniumHQ/selenium/tree/master/rb) with chrome. So, **you need to have chromedriver installed**.
 If you're using homebrew on OS X you can do: `brew install chromedriver`.
 
-To run the tests you can do, in the root of the gem,
+To run the tests you can do, in the root of the gem:
 
 ```
-bundle exec rspec
+# For running the full setup (sprockets and webpacker)
+bundle exec rake all_tests
+
+# For running helper specs (/lib directory)
+bundle exec rake tests
+
+# For running with webpacker only
+bundle exec rake webpack_tests
+
+# For running with sprockets only
+bundle exec rake sprockets_tests
 ```
 
 - The addons specs we put them inside `/spec/features`.

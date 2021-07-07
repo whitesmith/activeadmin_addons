@@ -6,9 +6,7 @@ module CapybaraHelpers
   end
 
   def click_filter_btn
-    within("#filters_sidebar_section") do
-      click_button("Filter")
-    end
+    page.execute_script("document.getElementsByClassName('filter_form')[0].submit()")
   end
 
   def expect_text(text)
@@ -94,5 +92,21 @@ module CapybaraHelpers
       expect(page).to have_css(klass, count: count)
       expect(page).not_to have_content(no_results)
     end
+  end
+
+  def click_add_nested
+    find("a.has_many_add").click
+  end
+
+  def on_nested_ctx(resource_number, &block)
+    within("li.has_many_container fieldset:nth-child(#{resource_number + 1}) ") do
+      block.call
+    end
+  end
+
+  def expect_nested_select2_result_text_to_eq(result_number, text)
+    expect(page).to have_css(
+      "li.nested_level:nth-child(#{result_number})", text: /#{text}/
+    )
   end
 end

@@ -5,15 +5,11 @@ ActiveAdmin.register Invoice do
   filter :id, as: :numeric_range_filter
 
   filter :category_id, as: :search_select_filter,
-                       url: proc { current_admin_user.categories_url },
+                       url: "/admin/categories",
                        fields: [:name],
                        minimum_input_length: 0
 
-  filter :buyer_id, as: :search_select_filter,
-                    minimum_input_length: 0,
-                    url: '/admin/admin_users',
-                    fields: [:email],
-                    display_name: :email
+  filter :created_at, as: :date_time_picker_filter
 
   index do
     selectable_column
@@ -23,9 +19,8 @@ ActiveAdmin.register Invoice do
     image_column :photo, style: :thumb
     attachment_column :attachment
     number_column :amount, as: :currency, unit: "$", separator: ","
-    list_column :skills
-    list_column :contact
     toggle_bool_column :active
+    column :created_at
     actions
   end
 
@@ -61,7 +56,7 @@ ActiveAdmin.register Invoice do
       f.input :state
 
       f.input :category_id, as: :search_select,
-                            url: proc { current_admin_user.categories_url },
+                            url: proc { "/admin/categories" },
                             fields: [:name],
                             display_name: 'name',
                             minimum_input_length: 1,

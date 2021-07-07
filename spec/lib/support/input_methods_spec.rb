@@ -5,11 +5,12 @@ describe ActiveAdminAddons::InputMethods do
     Class.new do
       include ActiveAdminAddons::InputMethods
 
-      attr_reader :method
+      attr_reader :method, :options
 
-      def initialize(object, method)
+      def initialize(object, method, options = {})
         @object = object
         @method = method
+        @options = options
       end
     end
   end
@@ -21,7 +22,8 @@ describe ActiveAdminAddons::InputMethods do
   end
 
   let(:method) { :category_id }
-  let(:instance) { dummy_class.new(object, method) }
+  let(:options) { {} }
+  let(:instance) { dummy_class.new(object, method, options) }
 
   def self.check_invalid_method(method_name)
     context "with nil method" do
@@ -54,18 +56,20 @@ describe ActiveAdminAddons::InputMethods do
     it { expect(instance.method_model).to be(Category) }
     check_invalid_method(:method_model)
 
-    context "when association has defined class_name option" do
-      let(:method) { :buyer_id }
-
-      it { expect(instance.method_model).to be(AdminUser) }
-    end
-
     context "when class_name isn't defined and object is a namespaced class" do
       let(:object) { Store::Car.create name: "Fiesta", year: 2017 }
       let(:method) { :manufacturer_id }
 
       it "looks up the association with namespace" do
         expect(instance.method_model).to be(Store::Manufacturer)
+      end
+    end
+
+    context "when a :method_model option is provided" do
+      let(:options) { { method_model: Store::Car } }
+
+      it "returns provided class" do
+        expect(instance.method_model).to be(Store::Car)
       end
     end
   end
